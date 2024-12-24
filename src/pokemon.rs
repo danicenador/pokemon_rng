@@ -1,4 +1,3 @@
-use crate::binary_operations;
 use crate::natures;
 use std::fmt::Debug;
 
@@ -43,7 +42,7 @@ impl Pokemon {
             return Gender::Unknown;
         }
 
-        let last_byte = binary_operations::get_last_byte(pvalue);
+        let last_byte = (pvalue & 0xFF) as u8;
         if last_byte >= gender_threshold {
             Gender::Male
         } else {

@@ -1,7 +1,5 @@
 use std::fmt::Debug;
 
-use crate::binary_operations;
-
 #[derive(Debug, Copy, Clone)]
 pub enum Nature {
     Hardy,
@@ -60,6 +58,6 @@ pub fn determine_nature(personality_value: &u32) -> Nature {
         Nature::Quirky,
     ];
 
-    let nature_value = binary_operations::get_last_byte(personality_value) % 25;
+    let nature_value = (personality_value & 0xFF) % 25;
     natures_vector[nature_value as usize]
 }

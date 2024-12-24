@@ -1,4 +1,3 @@
-mod binary_operations;
 mod natures;
 mod pokemon;
 mod rng_factory;
