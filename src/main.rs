@@ -11,18 +11,14 @@ fn main() {
     let trainer_secret_id: u16 = 12345; // Example Secret ID
 
     let mut rng_factory = RngFactory::new();
-    let personality_value = rng_factory.generate_personality_value();
-    println!("Random u32: {}", personality_value);
-
-    let last_byte = (personality_value & 0xFF) as u8;
-    println!("Last byte: {}", last_byte);
-
-    let some_pokemon = Pokemon::new(
-        personality_value,
-        gender_threshold,
-        trainer_id,
-        trainer_secret_id,
-    );
-
-    println!("{:#?}", some_pokemon);
+    for _ in 0..100 {
+        let personality_value = rng_factory.generate_personality_value();
+        let some_pokemon = Pokemon::new(
+            personality_value,
+            gender_threshold,
+            trainer_id,
+            trainer_secret_id,
+        );
+        println!("{:#?}", some_pokemon);
+    }
 }

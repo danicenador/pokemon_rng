@@ -31,6 +31,7 @@ impl Pokemon {
             Pokemon::calculate_shiny_value(&personality_value, &trainer_id, &trainer_secret_id);
         let shiny = shiny_value < 8;
         let ivs = Pokemon::calculate_ivs(&personality_value);
+
         Pokemon {
             personality_value,
             gender,
