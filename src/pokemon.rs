@@ -1,4 +1,7 @@
 use crate::natures;
+
+use polars::df;
+use polars::prelude::*;
 use std::fmt::Debug;
 
 #[derive(Debug)]
@@ -64,5 +67,21 @@ impl Pokemon {
             ivs[i] = ((pvalue >> (i * 5)) & 0x1F) as u8;
         }
         ivs
+    }
+    pub fn to_dataframe(&self) -> Result<DataFrame, PolarsError> {
+        let df = df![
+            "personality_value" => [self.personality_value],
+            "gender" => [format!("{:?}", self.gender)],
+            "nature" => [format!("{:?}", self.nature)],
+            "shiny_value" => [format!("{:?}", self.shiny_value)],
+            "shiny" => [self.shiny],
+            "hp_iv" => [format!("{:?}", self.ivs[0])],
+            "atk_iv" => [format!("{:?}", self.ivs[1])],
+            "def_iv" => [format!("{:?}", self.ivs[2])],
+            "spatk_iv" => [format!("{:?}", self.ivs[3])],
+            "spdef_iv" => [format!("{:?}", self.ivs[4])],
+            "speed_iv" => [format!("{:?}", self.ivs[5])],
+        ]?;
+        Ok(df)
     }
 }
