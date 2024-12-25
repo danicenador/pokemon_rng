@@ -6,12 +6,11 @@ use std::time::Instant;
 use pokemon::Pokemon;
 use rng_factory::RngFactory;
 
-use polars::prelude::*;
 use std::fs::File;
 use std::io::Result;
-use std::io::{self, Write};
+use std::io::Write;
 
-const N_POKEMON: u32 = 1_000;
+const N_POKEMON: u32 = 100_000_000;
 const GENDER_THRESHOLD: u8 = 126;
 const TRAINER_ID: u16 = 54321; // Example Trainer ID
 const TRAINER_SECRET_ID: u16 = 12345; // Example Secret ID
@@ -33,7 +32,7 @@ fn main() -> Result<()> {
             TRAINER_ID,
             TRAINER_SECRET_ID,
         );
-        file.write_all(some_pokemon.to_string().as_bytes())?;
+        file.write_all(some_pokemon.create_csv_row().as_bytes())?;
     }
 
     let duration = start.elapsed();

@@ -1,7 +1,5 @@
 use crate::natures;
 
-use polars::df;
-use polars::prelude::*;
 use std::fmt::Debug;
 
 #[derive(Debug)]
@@ -28,9 +26,9 @@ impl Pokemon {
         trainer_id: u16,
         trainer_secret_id: u16,
     ) -> Self {
-        let gender = Pokemon::calculate_gender(&personality_value, gender_threshold);
+        let gender: Gender = Pokemon::calculate_gender(&personality_value, gender_threshold);
         let nature = natures::determine_nature(&personality_value);
-        let shiny_value =
+        let shiny_value: u16 =
             Pokemon::calculate_shiny_value(&personality_value, &trainer_id, &trainer_secret_id);
         let shiny = shiny_value < 8;
         let ivs = Pokemon::calculate_ivs(&personality_value);
@@ -44,49 +42,41 @@ impl Pokemon {
             ivs,
         }
     }
-    fn calculate_gender(pvalue: &u32, gender_threshold: u8) -> Gender {
+
+    fn calculate_gender(personality_value: &u32, gender_threshold: u8) -> Gender {
         if gender_threshold == 255 {
             return Gender::Unknown;
         }
 
-        let last_byte = (pvalue & 0xFF) as u8;
+        let last_byte = (personality_value & 0xFF) as u8;
         if last_byte >= gender_threshold {
             Gender::Male
         } else {
             Gender::Female
         }
     }
-    fn calculate_shiny_value(pvalue: &u32, trainer_id: &u16, trainer_secret_id: &u16) -> u16 {
-        let pid_high = (pvalue >> 16) as u16;
-        let pid_low = (pvalue & 0xFFFF) as u16;
+
+    fn calculate_shiny_value(
+        personality_value: &u32,
+        trainer_id: &u16,
+        trainer_secret_id: &u16,
+    ) -> u16 {
+        let pid_high = (personality_value >> 16) as u16;
+        let pid_low = (personality_value & 0xFFFF) as u16;
         pid_high ^ pid_low ^ trainer_id ^ trainer_secret_id
     }
-    fn calculate_ivs(pvalue: &u32) -> [u8; 6] {
-        let mut ivs = [0; 6];
-        for i in 0..6 {
-            ivs[i] = ((pvalue >> (i * 5)) & 0x1F) as u8;
-        }
+
+    fn calculate_ivs(personality_value: &u32) -> [u8; 6] {
+        let mut ivs: [u8; 6] = [0; 6];
+        ivs.iter_mut().enumerate().for_each(|(i, iv)| {
+            *iv = ((personality_value >> (i * 5)) & 0x1F) as u8;
+        });
         ivs
     }
-    pub fn to_dataframe(&self) -> Result<DataFrame, PolarsError> {
-        let df = df![
-            "personality_value" => [self.personality_value],
-            "gender" => [format!("{:?}", self.gender)],
-            "nature" => [format!("{:?}", self.nature)],
-            "shiny_value" => [format!("{:?}", self.shiny_value)],
-            "shiny" => [self.shiny],
-            "hp_iv" => [format!("{:?}", self.ivs[0])],
-            "atk_iv" => [format!("{:?}", self.ivs[1])],
-            "def_iv" => [format!("{:?}", self.ivs[2])],
-            "spatk_iv" => [format!("{:?}", self.ivs[3])],
-            "spdef_iv" => [format!("{:?}", self.ivs[4])],
-            "speed_iv" => [format!("{:?}", self.ivs[5])],
-        ]?;
-        Ok(df)
-    }
-    pub fn to_string(&self) -> String {
+
+    pub fn create_csv_row(&self) -> String {
         format!(
-            "{}, {:?}, {:?}, {}, {}, {}, {}, {}, {}, {}, {}\n",
+            "{},{:?},{:?},{},{},{},{},{},{},{},{}\n",
             self.personality_value,
             self.gender,
             self.nature,
