@@ -84,4 +84,20 @@ impl Pokemon {
         ]?;
         Ok(df)
     }
+    pub fn to_string(&self) -> String {
+        format!(
+            "{}, {:?}, {:?}, {}, {}, {}, {}, {}, {}, {}, {}\n",
+            self.personality_value,
+            self.gender,
+            self.nature,
+            self.shiny_value,
+            self.shiny,
+            self.ivs[0],
+            self.ivs[1],
+            self.ivs[2],
+            self.ivs[3],
+            self.ivs[4],
+            self.ivs[5]
+        )
+    }
 }
