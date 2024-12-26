@@ -10,7 +10,7 @@ use std::fs::File;
 use std::io::Result;
 use std::io::Write;
 
-const N_POKEMON: u32 = 100_000_000;
+const N_POKEMON: u32 = 100_000;
 const GENDER_THRESHOLD: u8 = 126;
 const TRAINER_ID: u16 = 54321; // Example Trainer ID
 const TRAINER_SECRET_ID: u16 = 12345; // Example Secret ID

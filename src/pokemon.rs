@@ -20,6 +20,8 @@ pub struct Pokemon {
 }
 
 impl Pokemon {
+    const SHINY_THRESHOLD: u16 = 8;
+
     pub fn new(
         personality_value: u32,
         gender_threshold: u8,
@@ -30,7 +32,7 @@ impl Pokemon {
         let nature = natures::determine_nature(&personality_value);
         let shiny_value: u16 =
             Pokemon::calculate_shiny_value(&personality_value, &trainer_id, &trainer_secret_id);
-        let shiny = shiny_value < 8;
+        let shiny = shiny_value < Pokemon::SHINY_THRESHOLD;
         let ivs = Pokemon::calculate_ivs(&personality_value);
 
         Pokemon {
